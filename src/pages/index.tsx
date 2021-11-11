@@ -1,10 +1,12 @@
 import Link from 'next/link'
 import {useRouter} from 'next/router'
-import CountryList from '../components/country-list'
-
-import { initializeApollo } from '../apollo/client'
 import {useTranslation} from 'next-i18next'
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations'
+import { initializeApollo } from '../apollo/client'
+
+import CountryList from '../components/country-list'
+import ThemeChanger from '../components/theme-changer'
+
 
 const Index = () => {
     const router = useRouter()
@@ -21,6 +23,7 @@ const Index = () => {
                         {t('change-locale')}
                     </button>
                 </Link>
+                <ThemeChanger/>
             </div>
             <CountryList/>
         </main>

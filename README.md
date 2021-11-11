@@ -1,6 +1,6 @@
-#NEXTJS GRAPHQL
+# NEXTJS GRAPHQL
 
-### Tech:
+### Techs:
 -Nextjs
 
 -GraphQL

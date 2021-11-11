@@ -1,19 +1,19 @@
 import type {AppProps as NextAppProps} from "next/app";
-import { ClientContext } from 'graphql-hooks'
 import {appWithTranslation} from 'next-i18next'
-import { useGraphQLClient } from '../lib/graphql-client'
+import { ApolloProvider } from '@apollo/client'
+import { useApollo } from '../apollo/client'
 
 type AppProps<P = any> = {
     pageProps: P;
 } & Omit<NextAppProps<P>, "pageProps">;
 
 const MyApp = ({Component, pageProps}: AppProps) => {
-    const graphQLClient = useGraphQLClient(pageProps.initialGraphQLState)
+    const apolloClient = useApollo(pageProps.initialApolloState)
 
     return (
-        <ClientContext.Provider value={graphQLClient}>
+        <ApolloProvider client={apolloClient}>
             <Component {...pageProps} />
-        </ClientContext.Provider>
+        </ApolloProvider>
     )
 }
 

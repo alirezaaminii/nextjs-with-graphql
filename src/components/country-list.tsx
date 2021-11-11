@@ -1,47 +1,46 @@
-import { useQuery } from 'graphql-hooks'
+import {ApolloClient, InMemoryCache, gql, useQuery} from '@apollo/client';
 import ErrorMessage from './error-message'
 
-export const ALL_COUNTRIES_QUERY = `
-  query countriesList() {
-    countries() {
+const client = new ApolloClient({
+    cache: new InMemoryCache(),
+    uri: 'https://countries.trevorblades.com'
+});
+
+const LIST_COUNTRIES = gql`
+  {
+    countries {
       name
+      code
     }
   }
 `;
 
 interface Country {
-  name: string
+    name: string
+    code: string
 }
 
-export const allCountriesOptions = (variables?: unknown) => ({
-  variables: {  },
-})
-
 export default function CountryList() {
-  const { error, data } = useQuery(
-    ALL_COUNTRIES_QUERY,
-    allCountriesOptions()
-  )
+    const {data, loading, error} = useQuery(LIST_COUNTRIES, {client});
 
-  if (error) return <ErrorMessage message="Error loading countries." />
-  if (!data) return <div>Loading</div>
+    if (loading || error) {
+        return <p>{error ? <ErrorMessage message={error.message}/> : 'Loading...'}</p>;
+    }
 
-  const { allCountries } = data
-
-  return (
-    <>
-      <section>
-        <ul>
-          {allCountries.map((country: Country, index: number) => (
-            <li key={index}>
-              <div>
-                <span>{index + 1}. </span>
-                <p>{country.name}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
-    </>
-  )
+    return (
+        <>
+            <section>
+                <ul>
+                    {data.countries.map((country: Country) => (
+                        <li key={country.code}>
+                            <div>
+                                <span>{country.code}. </span>
+                                <p>{country.name}</p>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </section>
+        </>
+    )
 }

@@ -1,12 +1,8 @@
 import Link from 'next/link'
-import { initializeGraphQL } from '../lib/graphql-client'
-import graphQLRequest from '../lib/graphql-request'
 import {useRouter} from 'next/router'
-import CountryList, {
-    ALL_COUNTRIES_QUERY,
-    allCountriesOptions,
-} from '../components/country-list'
+import CountryList from '../components/country-list'
 
+import { initializeApollo } from '../apollo/client'
 import {useTranslation} from 'next-i18next'
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations'
 
@@ -33,12 +29,11 @@ const Index = () => {
 
 export const getStaticProps = async ({ locale }: {locale: string}) => {
     const translation = await serverSideTranslations(locale, ['common']);
-    const client = initializeGraphQL()
-    await graphQLRequest(client, ALL_COUNTRIES_QUERY, allCountriesOptions())
+    const apolloClient = initializeApollo()
 
     return {
         props: {
-            initialGraphQLState: client.cache.getInitialState(),
+            initialApolloState: apolloClient.cache.extract(),
             ...translation,
         },
     }
